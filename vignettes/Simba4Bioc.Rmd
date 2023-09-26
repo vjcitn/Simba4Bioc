@@ -1,0 +1,30 @@
+---
+title: "Simba4bioc: interfacing SIMBA's graph embedding methods to Bioconductor"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Simba4bioc: interfacing SIMBA's graph embedding methods to Bioconductor}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    highlight: pygments
+    number_sections: yes
+    theme: united
+    toc: yes
+---
+
+# Introduction
+
+SIMBA ([paper link](https://www.nature.com/articles/s41592-023-01899-8)) ([github](https://github.com/pinellolab/simba)) provides methods for "graph embeddings" of relationships between
+elements assayed in multimodal single cell experiments.  The main
+software stack is written in Python.  This package uses basilisk
+to simplify use of the SIMBA methods in R/Bioconductor.
+
+# Motivating illustration
+
+```{r lk1, message=FALSE}
+library(Simba4Bioc)
+sref = simba_ref()
+names(sref)
+```
