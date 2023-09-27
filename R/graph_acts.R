@@ -35,6 +35,8 @@ build_and_train_pbg = function( adSimb, copy=FALSE,
 
 #' Helper function to recursively flatten nested lists
 #' produced by Chat-GPT 3
+#' @param x list as produced by fromJSON
+#' @param prefix character(1)
 flatten_json <- function(x, prefix = "") {
   out <- list()
   for (key in names(x)) {

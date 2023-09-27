@@ -7,6 +7,11 @@ produced by Chat-GPT 3}
 \usage{
 flatten_json(x, prefix = "")
 }
+\arguments{
+\item{x}{list as produced by fromJSON}
+
+\item{prefix}{character(1)}
+}
 \description{
 Helper function to recursively flatten nested lists
 produced by Chat-GPT 3

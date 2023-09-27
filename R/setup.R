@@ -2,6 +2,7 @@
 
 
 #' hand sfaira from specified basilisk environment
+#' @importFrom reticulate import
 #' @note simba 1.2
 #' @export
 simba_ref = function() {
