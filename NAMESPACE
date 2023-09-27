@@ -3,6 +3,8 @@
 export(basic_preproc)
 export(build_and_train_pbg)
 export(get_paul15)
+export(ingest_training_stats)
 export(scanpy_ref)
 export(simba_ref)
 importFrom(R.utils,decompressFile)
+importFrom(jsonlite,fromJSON)

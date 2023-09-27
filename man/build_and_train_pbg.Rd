@@ -24,7 +24,8 @@ to FALSE}
 
 \item{use_hvg}{logical(1) passed as `use_highly_variable` to gen_graph, defaults to FALSE}
 
-\item{dirname}{character(1) defaults to 'graph0'}
+\item{dirname}{character(1) defaults to 'graph0'; training stats will be saved
+to `paste0(simba_ref$settings$workdir, "/", dirname, "/", model, "/", "training_stats.json")`}
 
 \item{auto_wd}{logical(1) defaults to TRUE, for automatic setting of weight decay}
 
@@ -38,7 +39,7 @@ to FALSE}
 build and train SIMBA PBG graph
 }
 \examples{
-p15 = get_paul15()
+p15 = get_paul15(overwrite=TRUE) # allow repetition
 ref = simba_ref()
 pp = ref$read_h5ad(p15)
 bb = basic_preproc(pp, simba_ref=ref)
