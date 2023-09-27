@@ -11,7 +11,7 @@
 #' @param simba_ref instance of python.builtin.module, checked to have component 'tl'
 #' @return NULL
 #' @examples
-#' p15 = get_paul15()
+#' p15 = get_paul15(overwrite=TRUE) # allow repetition
 #' ref = simba_ref()
 #' pp = ref$read_h5ad(p15)
 #' bb = basic_preproc(pp, simba_ref=ref)

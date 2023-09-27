@@ -1,6 +1,6 @@
 
 # necessary for python module control
-bsklenv <- basilisk::BasiliskEnvironment(
+bsklenv <- basilisk::BasiliskEnvironment(channels=c("conda-forge", "bioconda"),
   envname = "bsklenv", packages = "simba==1.2", pip = "scanpy==1.9.5",
   pkgname = "Simba4Bioc")
 
