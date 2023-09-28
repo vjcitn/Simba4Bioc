@@ -22,11 +22,11 @@ a list with two data.frames of training statistics
 get pbg_metrics data frames
 }
 \examples{
-p15 = get_paul15(overwrite=TRUE) # allow repetition
+p15 = get_paul15_path(overwrite=TRUE) # allow repetition
 ref = simba_ref()
 pp = ref$read_h5ad(p15)
 bb = basic_preproc(pp, simba_ref=ref)
 gg = build_and_train_pbg( bb, simba_ref=ref )
 ts = ingest_training_stats(ref)
-lapply(ts, head, 2)
+head(ts$df1)
 }

@@ -10,9 +10,10 @@
 #' @param save_wd logical(1) defaults to TRUE
 #' @param output character(1) defaults to 'model'
 #' @param simba_ref instance of python.builtin.module, checked to have component 'tl'
-#' @return NULL
+#' @return NULL; components of `simba_ref` are updated to permit retrieval
+#' of embedding.
 #' @examples
-#' p15 = get_paul15(overwrite=TRUE) # allow repetition
+#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
 #' ref = simba_ref()
 #' pp = ref$read_h5ad(p15)
 #' bb = basic_preproc(pp, simba_ref=ref)
@@ -59,13 +60,13 @@ flatten_json <- function(x, prefix = "") {
 #' defaults to 'model'
 #' @return a list with two data.frames of training statistics
 #' @examples
-#' p15 = get_paul15(overwrite=TRUE) # allow repetition
+#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
 #' ref = simba_ref()
 #' pp = ref$read_h5ad(p15)
 #' bb = basic_preproc(pp, simba_ref=ref)
 #' gg = build_and_train_pbg( bb, simba_ref=ref )
 #' ts = ingest_training_stats(ref)
-#' lapply(ts, head, 2)
+#' head(ts$df1)
 #' @export
 ingest_training_stats = function(simba_ref,
   gg_dirname = 'graph0', tr_output = 'model') {
@@ -85,3 +86,35 @@ ingest_training_stats = function(simba_ref,
   list(df1=df1, df2=df2)
 }
  
+retrieve_embedding = function(simba_ref) {
+ simba_ref$read_embedding()
+}
+
+# for scRNA-seq, the embedding "cell" element
+# needs to be reordered if there are metadata
+# characteristics (such as type or cluster labels)
+# to be propagated for graph investigation
+
+# the embedding $C component will have an empty
+# data frame, and will also have an obs_names
+# element that is an index.  this can be used
+# to re-order the original AnnData object's 'obs'
+# element, from which a label can be extracted
+
+#' try propagation
+#' @examples
+#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
+#' ref = simba_ref()
+#' pp = ref$read_h5ad(p15)
+#' bb = basic_preproc(pp, simba_ref=ref)
+#' gg = build_and_train_pbg( bb, simba_ref=ref )
+#' labc = propagate_label( ref, pp, "paul15_clusters" )
+#' @export
+propagate_label = function( simba_ref, origad, label_name ) {
+  cglist = retrieve_embedding( simba_ref )
+  cglist$C$obs$tmp =
+    origad[cglist$C$obs_names]$obs[[label_name]] # reorder + assign
+  names(cglist$C$obs) = label_name
+  cglist$C
+}
+
