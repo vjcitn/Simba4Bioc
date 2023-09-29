@@ -15,7 +15,7 @@ Description: Simba4Bioc defines interfaces from Bioconductor
 License: Artistic-2.0
 Encoding: UTF-8
 Depends: R (>= 4.1), dplyr
-Imports: basilisk, R.utils, jsonlite, reticulate
+Imports: basilisk, R.utils, jsonlite, reticulate, rhdf5
 Suggests: knitr, testthat, BiocStyle
 VignetteBuilder: knitr
 biocViews: Infrastructure
