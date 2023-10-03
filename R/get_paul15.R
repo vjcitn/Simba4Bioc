@@ -20,3 +20,8 @@ get_10x3kpbmc_path = function (...)
     R.utils::decompressFile(gzpath, ext = "gz", FUN = gzfile, 
         temporary = TRUE, remove = FALSE, ...)
 }
+
+#' retrieve path to the 3k PBMC cell embedding in AnnData format
+#' @export
+get_3k_cell_emb = function()
+  system.file("extdata", "cemb.h5ad", package="Simba4Bioc")

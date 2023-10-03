@@ -23,8 +23,114 @@ to simplify use of the SIMBA methods in R/Bioconductor.
 
 # Motivating illustration
 
+The key component of the package is the "pinned"
+simba python module.  Most of what is computed
+in using SIMBA graph embeddings is defined
+in this module.
+
 ```{r lk1, message=FALSE}
 library(Simba4Bioc)
 sref = simba_ref()
 names(sref)
+```
+
+## Acquiring demonstration data
+
+The "3k PBMC" dataset from TENx is a common
+resource for demonstrations.  We have a compressed
+version of it and the `get_` function will
+uncompress and return the path of the h5ad
+(AnnData) representation.  We then
+use the `read_h5ad` method from simba
+to access the dataset.
+
+```{r dodec}
+p3k = get_10x3kpbmc_path(overwrite=TRUE)
+pp = sref$read_h5ad(p3k)
+```
+`pp` is now a proper AnnData instance.
+```{r lkpp}
+pp
+names(pp)
+pp['X'][1:3,1:3]
+```
+
+## Building and exploring the graph embedding
+
+### Code and output
+
+This sequence of commands will
+filter genes and build a graph of
+genes and cells as nodes and weighted edges
+defined by discretized expression measures.
+(See `tools/_general.py` in the simba
+modules for details on the discretization
+procedure.)
+
+```{r dog1, eval=FALSE}
+bb = basic_preproc(pp, simba_ref=sref)
+gg = build_and_train_pbg( bb, simba_ref=sref )
+dict = sref$read_embedding()
+```
+
+This results in a pair of AnnData instances named
+'C' and 'G' corresponding to cell and gene embeddings
+respectively.  
+
+### Embedding layout
+
+Before we start exploring the embeddings numerically,
+let's see what kinds of data elements are involved.
+SIMBA uses the PyTorch BigGraph framework.  
+For the operations noted above, the graph data
+take the following form:
+```
+pbg
+└── graph0
+    ├── entity_alias.txt
+    ├── graph_stats.json
+    ├── input
+    │   ├── edge
+    │   │   └── edges_0_0.h5
+    │   └── entity
+    │       ├── entity_count_C_0.txt
+    │       ├── entity_count_G_0.txt
+    │       ├── entity_names_C_0.json
+    │       └── entity_names_G_0.json
+    ├── model
+    │   ├── checkpoint_version.txt
+    │   ├── config.json
+    │   ├── embeddings_C_0.v10.h5
+    │   ├── embeddings_G_0.v10.h5
+    │   ├── model.v10.h5
+    │   └── training_stats.json
+    └── pbg_graph.txt
+```
+The folder names `graph0` and `model` are arbitrary
+defaults set in the `build_and_train_pbg` function.
+The `graph0/model/embeddings...` HDF5 files hold
+the coordinates of cells and genes in the graph-derived
+latent spaces.  Thus an invocation of `rhdf5::h5read` on
+the `embeddings_C_0.v10.h5` file will produce a 50 x 2700
+matrix of FLOAT.
+
+### Figure 2b
+
+To reproduce Figure 2b of the SIMBA paper
+without recomputing the graph embedding
+we have stored the cell embedding in the package,
+for retrieval using `read_h5ad(get_3k_cell_emb())`.
+The cell type labels in the initial AnnData instance `pp`
+computed above need to be reorganized.
+
+```{r dofig2b, message=FALSE}
+cemb = sref$read_h5ad(get_3k_cell_emb())
+cemb$obs$tmp = pp[cemb$obs_names]$obs[["celltype"]]
+names(cemb$obs) = "celltype"
+library(uwot)
+cumap = umap(cemb['X'])
+library(ggplot2)
+mydf = data.frame(x=cumap[,1], y=cumap[,2], 
+   ctype=cemb$obs$celltype)
+ggplot(mydf, aes(x=x,y=y,colour=ctype)) + geom_point()
 ```

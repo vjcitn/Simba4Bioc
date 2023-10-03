@@ -114,7 +114,7 @@ propagate_label = function( simba_ref, origad, label_name ) {
   cglist = retrieve_embedding( simba_ref )
   cglist$C$obs$tmp =
     origad[cglist$C$obs_names]$obs[[label_name]] # reorder + assign
-  names(cglist$C$obs) = label_name
+  names(cglist$C$obs) = label_name   # rename 'tmp'
   cglist$C
 }
 

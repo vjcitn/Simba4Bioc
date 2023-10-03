@@ -26,12 +26,12 @@ get_emb_h5 = function (ctarpath, type = "cell", numtag = "_0", gname = "graph0",
     rhdf5::h5read(file.path(exdir, file_in_tar), "/embeddings")
 }
 
-get_emb_h5 = function(ctarpath, type="cell",  numtag="_0", gname="graph0", 
-   mname="model", spec="v10", exdir=tempdir()) {
-  tag = switch(type, cell="C", gene="G")
-  if (is.null(tag)) stop("type not in ('cell', 'gene')")
-  entity = paste0("embeddings_", tag, numtag, ".", spec, ".h5")
-  file_in_tar = paste0("pbg/", gname, "/", mname, "/", entity)
-  untar(ctarpath, files=file_in_tar, exdir=exdir)
-  rhdf5::h5read(file.path(exdir, file_in_tar), "/embeddings")
-}
+#get_emb_h5 = function(ctarpath, type="cell",  numtag="_0", gname="graph0", 
+#   mname="model", spec="v10", exdir=tempdir()) {
+#  tag = switch(type, cell="C", gene="G")
+#  if (is.null(tag)) stop("type not in ('cell', 'gene')")
+#  entity = paste0("embeddings_", tag, numtag, ".", spec, ".h5")
+#  file_in_tar = paste0("pbg/", gname, "/", mname, "/", entity)
+#  untar(ctarpath, files=file_in_tar, exdir=exdir)
+#  rhdf5::h5read(file.path(exdir, file_in_tar), "/embeddings")
+#}
