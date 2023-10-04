@@ -43,9 +43,9 @@ of embedding.
 build and train SIMBA PBG graph
 }
 \examples{
-p15 = get_paul15_path(overwrite=TRUE) # allow repetition
+p3k = get_10x3kpbmc_path(overwrite=TRUE)
 ref = simba_ref()
-pp = ref$read_h5ad(p15)
+pp = ref$read_h5ad(p3k)
 bb = basic_preproc(pp, simba_ref=ref)
 gg = build_and_train_pbg( bb, simba_ref=ref )
 dict = ref$read_embedding()

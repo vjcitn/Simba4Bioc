@@ -13,6 +13,13 @@
 #' @return instance of AnnData with layers raw and simba, the latter consisting
 #' of a sparse matrix, and other components as determined by the operations
 #' selected through argument bindings.
+#' @examples
+#' p3k = get_10x3kpbmc_path(overwrite=TRUE)
+#' ref = simba_ref()
+#' pp = ref$read_h5ad(p3k)
+#' pp
+#' bb = basic_preproc(pp, simba_ref=ref)
+#' bb
 #' @export
 basic_preproc = function(ad, workdir=tempdir(),
    min_n_cells = 3L, norm_method = 'lib_size',

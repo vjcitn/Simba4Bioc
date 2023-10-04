@@ -45,3 +45,11 @@ Transform an AnnData input to one that has had gene filtering,
 normalization, log transformation, low-variance gene exclusion,
 and discretization applied.
 }
+\examples{
+p3k = get_10x3kpbmc_path(overwrite=TRUE)
+ref = simba_ref()
+pp = ref$read_h5ad(p3k)
+pp
+bb = basic_preproc(pp, simba_ref=ref)
+bb
+}

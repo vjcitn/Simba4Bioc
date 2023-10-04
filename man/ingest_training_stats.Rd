@@ -4,7 +4,12 @@
 \alias{ingest_training_stats}
 \title{get pbg_metrics data frames}
 \usage{
-ingest_training_stats(simba_ref, gg_dirname = "graph0", tr_output = "model")
+ingest_training_stats(
+  simba_ref,
+  gg_dirname = "graph0",
+  tr_output = "model",
+  jsonpath
+)
 }
 \arguments{
 \item{simba_ref}{reference to simba module}
@@ -14,6 +19,8 @@ defaults to 'graph0'}
 
 \item{tr_output}{character(1) the output specified for build_and_train_pbg
 defaults to 'model'}
+
+\item{jsonpath}{character(1) path to training_stats.json}
 }
 \value{
 a list with two data.frames of training statistics
@@ -22,11 +29,20 @@ a list with two data.frames of training statistics
 get pbg_metrics data frames
 }
 \examples{
-p15 = get_paul15_path(overwrite=TRUE) # allow repetition
-ref = simba_ref()
-pp = ref$read_h5ad(p15)
-bb = basic_preproc(pp, simba_ref=ref)
-gg = build_and_train_pbg( bb, simba_ref=ref )
-ts = ingest_training_stats(ref)
+# full run-based, commented out as too long
+# p3k = get_10x3kpbmc_path(overwrite=TRUE) # allow repetition
+# ref = simba_ref()
+# pp = ref$read_h5ad(p3k)
+# bb = basic_preproc(pp, simba_ref=ref)
+# gg = build_and_train_pbg( bb, simba_ref=ref )
+# ts = ingest_training_stats(ref)
+# head(ts$df1)
+#
+# use archived pbg output
+#
+tpath = system.file(file.path("extdata", "pbg3k.tar.xz"), package="Simba4Bioc")
+untar(tpath, exdir = tempdir())
+jsonpath = paste0(tempdir(), "/pbg/graph0/model/training_stats.json")
+ts = ingest_training_stats(jsonpath=jsonpath)
 head(ts$df1)
 }

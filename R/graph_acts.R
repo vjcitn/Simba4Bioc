@@ -13,9 +13,9 @@
 #' @return NULL; components of `simba_ref` are updated to permit retrieval
 #' of embedding.
 #' @examples
-#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
+#' p3k = get_10x3kpbmc_path(overwrite=TRUE)
 #' ref = simba_ref()
-#' pp = ref$read_h5ad(p15)
+#' pp = ref$read_h5ad(p3k)
 #' bb = basic_preproc(pp, simba_ref=ref)
 #' gg = build_and_train_pbg( bb, simba_ref=ref )
 #' dict = ref$read_embedding()
@@ -58,22 +58,32 @@ flatten_json <- function(x, prefix = "") {
 #' defaults to 'graph0'
 #' @param tr_output character(1) the output specified for build_and_train_pbg
 #' defaults to 'model'
+#' @param jsonpath character(1) path to training_stats.json
 #' @return a list with two data.frames of training statistics
 #' @examples
-#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
-#' ref = simba_ref()
-#' pp = ref$read_h5ad(p15)
-#' bb = basic_preproc(pp, simba_ref=ref)
-#' gg = build_and_train_pbg( bb, simba_ref=ref )
-#' ts = ingest_training_stats(ref)
+#' # full run-based, commented out as too long
+#' # p3k = get_10x3kpbmc_path(overwrite=TRUE) # allow repetition
+#' # ref = simba_ref()
+#' # pp = ref$read_h5ad(p3k)
+#' # bb = basic_preproc(pp, simba_ref=ref)
+#' # gg = build_and_train_pbg( bb, simba_ref=ref )
+#' # ts = ingest_training_stats(ref)
+#' # head(ts$df1)
+#' #
+#' # use archived pbg output
+#' #
+#' tpath = system.file(file.path("extdata", "pbg3k.tar.xz"), package="Simba4Bioc")
+#' untar(tpath, exdir = tempdir())
+#' jsonpath = paste0(tempdir(), "/pbg/graph0/model/training_stats.json")
+#' ts = ingest_training_stats(jsonpath=jsonpath)
 #' head(ts$df1)
 #' @export
 ingest_training_stats = function(simba_ref,
-  gg_dirname = 'graph0', tr_output = 'model') {
-  jsondir = sprintf(
+  gg_dirname = 'graph0', tr_output = 'model', jsonpath) {
+  if (missing(jsonpath)) jsonpath = sprintf(
      paste0(simba_ref$settings$workdir, "/pbg/%s/%s/training_stats.json"),
      gg_dirname, tr_output)
-  txt = readLines(jsondir)
+  txt = readLines(jsonpath)
   parsed_stats = lapply(txt, jsonlite::fromJSON)
   # seems to be alternating document schemata
   ntxt = length(parsed_stats)
@@ -101,14 +111,20 @@ retrieve_embedding = function(simba_ref) {
 # to re-order the original AnnData object's 'obs'
 # element, from which a label can be extracted
 
-#' try propagation
+#' propagation -- updates a post-train cell embedding, in
+#' which embedding "rows" corresponding to cells have
+#' been reordered, adding a column to the `obs` component
 #' @examples
-#' p15 = get_paul15_path(overwrite=TRUE) # allow repetition
+#' p3k = get_10x3kpbmc_path(overwrite=TRUE) # allow repetition
 #' ref = simba_ref()
-#' pp = ref$read_h5ad(p15)
-#' bb = basic_preproc(pp, simba_ref=ref)
-#' gg = build_and_train_pbg( bb, simba_ref=ref )
-#' labc = propagate_label( ref, pp, "paul15_clusters" )
+#' pp = ref$read_h5ad(p3k)
+#' # bb = basic_preproc(pp, simba_ref=ref)
+#' # gg = build_and_train_pbg( bb, simba_ref=ref )
+#' # labc = propagate_label( ref, pp, "celltype" )
+#' cemb = ref$read_h5ad( get_3k_cell_emb() )
+#' cemb$obs$celltype = pp[cemb$obs_names]$obs[["celltype"]] # what propagate_label does
+#' um = uwot::umap( cemb['X'] )
+#' plot(um, pch=19, col=factor(cemb$obs$celltype) )
 #' @export
 propagate_label = function( simba_ref, origad, label_name ) {
   cglist = retrieve_embedding( simba_ref )
