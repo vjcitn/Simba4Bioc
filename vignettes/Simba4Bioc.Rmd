@@ -114,7 +114,7 @@ latent spaces.  Thus an invocation of `rhdf5::h5read` on
 the `embeddings_C_0.v10.h5` file will produce a 50 x 2700
 matrix of FLOAT.
 
-### Figure 2b
+### Figure 2b: UMAP for cell embedding
 
 To reproduce Figure 2b of the SIMBA paper
 without recomputing the graph embedding
@@ -128,9 +128,50 @@ cemb = sref$read_h5ad(get_3k_cell_emb())
 cemb$obs$tmp = pp[cemb$obs_names]$obs[["celltype"]]
 names(cemb$obs) = "celltype"
 library(uwot)
+set.seed(1234)
 cumap = umap(cemb['X'])
 library(ggplot2)
 mydf = data.frame(x=cumap[,1], y=cumap[,2], 
    ctype=cemb$obs$celltype)
 ggplot(mydf, aes(x=x,y=y,colour=ctype)) + geom_point()
 ```
+
+### Figure 2c: Embedding genes and cells together
+
+We won't produce figure 2c exactly, as 2c appears
+to use gene filtering.  We saved the gene
+embedding in `gemb` to avoid building the
+graph in this vignette.
+
+```{r doemb, message=FALSE}
+gemb = sref$read_h5ad(get_3k_gene_emb())
+ginc = sref$tl$embed(adata_ref=cemb, list_adata_query=list(gemb))
+eanno = c(as.character(cemb$obs$celltype), rep("gene", nrow(gemb['X'])))
+fullanno = rownames(ginc$obs)  # cell types and gene symbols concatenated
+ginc$obs$entity_anno = eanno
+```
+
+Now `ginc` is an AnnData instance with 'X' component the
+50-dimensional latent space constructed from the graph
+linking genes and cells by expression-based weights.
+UMAP is applied to present the 2-d reduction:
+
+```{r dopl, message=FALSE}
+library(uwot)
+uuu = umap(ginc['X'])
+kkdf = data.frame(x=uuu[,1], y=uuu[,2], 
+   ent=ginc$obs$entity_anno, fullanno=fullanno)
+ggplot(kkdf, aes(x=x, y=y, colour=ent, text=fullanno)) + 
+   geom_point(size=.6, alpha=.5)
+```
+
+When this plot is rendered interactively with plotly, points
+corresponding to genes are annotated with gene symbol.
+To see how this works in a vignette, we'll drill
+down on a small portion of the projection.
+```{r drill, message=FALSE}
+ndf = kkdf |> filter(x > -6.2, x < -3, y > 4.5)
+library(plotly)
+plot_ly(ndf, x=~x, y=~y, color=~ent, mode="markers", text=~fullanno, type="scatter")
+```
+

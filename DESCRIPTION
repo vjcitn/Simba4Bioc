@@ -16,7 +16,7 @@ License: Artistic-2.0
 Encoding: UTF-8
 Depends: R (>= 4.1), dplyr
 Imports: basilisk, R.utils, jsonlite, reticulate, rhdf5
-Suggests: knitr, testthat, BiocStyle, uwot, ggplot2
+Suggests: knitr, testthat, BiocStyle, uwot, ggplot2, plotly
 VignetteBuilder: knitr
 biocViews: Infrastructure
 RoxygenNote: 7.2.3

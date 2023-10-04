@@ -25,3 +25,8 @@ get_10x3kpbmc_path = function (...)
 #' @export
 get_3k_cell_emb = function()
   system.file("extdata", "cemb.h5ad", package="Simba4Bioc")
+
+#' retrieve path to the 3k PBMC gene embedding in AnnData format
+#' @export
+get_3k_gene_emb = function()
+  system.file("extdata", "gemb.h5ad", package="Simba4Bioc")
