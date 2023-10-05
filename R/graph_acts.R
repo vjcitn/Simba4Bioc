@@ -114,6 +114,14 @@ retrieve_embedding = function(simba_ref) {
 #' propagation -- updates a post-train cell embedding, in
 #' which embedding "rows" corresponding to cells have
 #' been reordered, adding a column to the `obs` component
+#' @param simba_ref instance of simba module; `retrieve_embedding` python
+#' method will be applied to receive elements `C` and `G`.  `C` will be the focus;
+#' the rows of its `obs` component need to be reordered.
+#' @param origad instance of AnnData regarded as possessing the
+#' names of entities as a component of obs, in the
+#' order in which they were first constructed
+#' @param label_name character(1) element of `origad$obs` to
+#' be reordered and assigned to the embedding component `C`.
 #' @examples
 #' p3k = get_10x3kpbmc_path(overwrite=TRUE) # allow repetition
 #' ref = simba_ref()

@@ -8,6 +8,18 @@ been reordered, adding a column to the `obs` component}
 \usage{
 propagate_label(simba_ref, origad, label_name)
 }
+\arguments{
+\item{simba_ref}{instance of simba module; `retrieve_embedding` python
+method will be applied to receive elements `C` and `G`.  `C` will be the focus;
+the rows of its `obs` component need to be reordered.}
+
+\item{origad}{instance of AnnData regarded as possessing the
+names of entities as a component of obs, in the
+order in which they were first constructed}
+
+\item{label_name}{character(1) element of `origad$obs` to
+be reordered and assigned to the embedding component `C`.}
+}
 \description{
 propagation -- updates a post-train cell embedding, in
 which embedding "rows" corresponding to cells have
