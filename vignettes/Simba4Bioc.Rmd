@@ -141,7 +141,7 @@ ggplot(mydf, aes(x=x,y=y,colour=ctype)) + geom_point()
 We won't produce figure 2c exactly, as 2c appears
 to use gene filtering.  We saved the gene
 embedding in `gemb` to avoid building the
-graph in this vignette.
+graph repeatedly in this vignette.
 
 ```{r doemb, message=FALSE}
 gemb = sref$read_h5ad(get_3k_gene_emb())
@@ -198,3 +198,38 @@ p <- plot_ly(ndf, x=~x, y=~y, color=~ent,
 p
 ```
 
+### Figure 2d: barcodes
+
+We'll reuse the `pp` representation of the 3k PBMC
+data computed above to illustrate the barcode
+plotting for multiple genes.
+
+```{r do4, message=FALSE}
+syms = c("CST3", "MS4A1", "NKG7", "GAPDH")
+cp = get_3k_cell_emb()
+gp = get_3k_gene_emb()
+dats = lapply(syms, function(x) {
+  ans = simba_barcode_data(symbol = x, origad = pp,
+    clabel="celltype", simbaref=sref, cembpath = cp,
+    gembpath = gp)
+  ans$gene = x
+  ans
+  })
+alld = do.call(rbind, dats)
+library(ggplot2)
+ggplot(alld, aes(x=rank, xend=rank, y=0, yend=score, colour=attr)) +
+  geom_segment() + facet_wrap(~gene, ncol=2) + 
+    theme(strip.text=element_text(size=24), 
+      legend.text=element_text(size=24), 
+      axis.text=element_text(size=24))
+```
+
+# Conclusions
+
+This takes care of the bulk of Figure 2 of the initial SIMBA
+paper. Data for 2e can be obtained from 
+```
+Simba4Bioc:::compare_entities(sref, cemb, gemb)
+```
+
+Additional vignettes in production will explore multiomic applications.
