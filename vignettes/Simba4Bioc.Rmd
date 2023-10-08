@@ -73,7 +73,7 @@ gg = build_and_train_pbg( bb, simba_ref=sref )
 dict = sref$read_embedding()
 ```
 
-This results in a pair of AnnData instances named
+`dict` is list containing a pair of AnnData instances named
 'C' and 'G' corresponding to cell and gene embeddings
 respectively.  
 
@@ -106,8 +106,8 @@ pbg
     │   └── training_stats.json
     └── pbg_graph.txt
 ```
-The folder names `graph0` and `model` are arbitrary
-defaults set in the `build_and_train_pbg` function.
+The folder names `graph0` and `model` are arbitrary, set as
+defaults in the `build_and_train_pbg` function.
 The `graph0/model/embeddings...` HDF5 files hold
 the coordinates of cells and genes in the graph-derived
 latent spaces.  Thus an invocation of `rhdf5::h5read` on
@@ -169,9 +169,32 @@ When this plot is rendered interactively with plotly, points
 corresponding to genes are annotated with gene symbol.
 To see how this works in a vignette, we'll drill
 down on a small portion of the projection.
+
+To help with annotation, we define a new function
+that adds a persistent label.
 ```{r drill, message=FALSE}
-ndf = kkdf |> filter(x > -6.2, x < -3, y > 4.5)
 library(plotly)
-plot_ly(ndf, x=~x, y=~y, color=~ent, mode="markers", text=~fullanno, type="scatter")
+addg = function (p=., sym = "NKG7", dat) 
+{
+    ro = dplyr::filter(dat, fullanno == sym)
+    plotly::add_text(p, x = ro$x, y = ro$y, text = sym, 
+        textfont=list(size=15, color="black"))
+}
+```
+
+Now produce the interactive visualization with selected
+annotations of gene positions in the combined embedding.
+
+```{r annopl}
+ndf = kkdf |> dplyr::filter(x > -6.2, x < -3, y > 4.5)
+p <- plot_ly(ndf, x=~x, y=~y, color=~ent,
+   mode="markers", text=~fullanno, type="scatter") %>% 
+     addg(dat=ndf) %>% 
+     addg(sym="IL7R", dat=ndf) %>%
+     addg(sym="CD8B", dat=ndf) %>%
+     addg(sym="CD8A", dat=ndf) %>%
+     addg(sym="BCL2", dat=ndf) %>%
+     addg(sym="LDLRAP1", dat=ndf)
+p
 ```
 
