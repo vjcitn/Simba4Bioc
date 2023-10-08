@@ -1,0 +1,10 @@
+pandoc: 2.9.2.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  Simba4Bioc: Simba4Bioc.html
+last_built: 2023-10-08T17:03Z
+urls:
+  reference: https://github.com/vjcitn/Simba4Bioc/reference
+  article: https://github.com/vjcitn/Simba4Bioc/articles
+
