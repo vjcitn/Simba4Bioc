@@ -2,10 +2,10 @@
 % Please edit documentation in R/barcode.R
 \name{simba_barcode_data}
 \alias{simba_barcode_data}
-\title{'barcode' data for figure 2d}
+\title{'barcode' data for figure 2d of original simba paper}
 \usage{
 simba_barcode_data(
-  symbol,
+  symbols,
   origad,
   clabel,
   simbaref,
@@ -15,7 +15,7 @@ simba_barcode_data(
 )
 }
 \arguments{
-\item{symbol}{character(1) gene symbol for barcode visualization}
+\item{symbols}{character() vector of gene symbols for barcode visualization}
 
 \item{origad}{AnnData reference to original RNA-seq data}
 
@@ -31,14 +31,15 @@ simba_barcode_data(
 as source of scoring of strength of cell-gene association}
 }
 \description{
-'barcode' data for figure 2d
+'barcode' data for figure 2d of original simba paper
 }
 \examples{
 sref = simba_ref()
 p3k = sref$read_h5ad(get_10x3kpbmc_path(overwrite=TRUE))
-myd = simba_barcode_data( symbol = "MS4A1",
+myd = simba_barcode_data( symbols = c("MS4A1", "CST3", "NKG7"),
    origad = p3k, clabel = "celltype",
    simbaref = sref, cembpath = get_3k_cell_emb(),
    gembpath = get_3k_gene_emb() )
-head(myd)
+head(myd,3)
+table(myd$symbol)
 }

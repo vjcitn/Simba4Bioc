@@ -16,6 +16,9 @@
     <loc>https://github.com/vjcitn/Simba4Bioc/index.html</loc>
   </url>
   <url>
+    <loc>https://github.com/vjcitn/Simba4Bioc/litpl.html</loc>
+  </url>
+  <url>
     <loc>https://github.com/vjcitn/Simba4Bioc/reference/basic_preproc.html</loc>
   </url>
   <url>
@@ -23,6 +26,9 @@
   </url>
   <url>
     <loc>https://github.com/vjcitn/Simba4Bioc/reference/compare_entities.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/vjcitn/Simba4Bioc/reference/figures/litpl.html</loc>
   </url>
   <url>
     <loc>https://github.com/vjcitn/Simba4Bioc/reference/flatten_json.html</loc>
@@ -56,6 +62,9 @@
   </url>
   <url>
     <loc>https://github.com/vjcitn/Simba4Bioc/reference/simba_barcode_data.html</loc>
+  </url>
+  <url>
+    <loc>https://github.com/vjcitn/Simba4Bioc/reference/simba_barcode_data_old.html</loc>
   </url>
   <url>
     <loc>https://github.com/vjcitn/Simba4Bioc/reference/simba_ref.html</loc>

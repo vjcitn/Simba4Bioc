@@ -204,24 +204,20 @@ We'll reuse the `pp` representation of the 3k PBMC
 data computed above to illustrate the barcode
 plotting for multiple genes.
 
-```{r do4, message=FALSE}
+```{r do4, message=FALSE, fig.width=unit(10, "cm")}
 syms = c("CST3", "MS4A1", "NKG7", "GAPDH")
 cp = get_3k_cell_emb()
 gp = get_3k_gene_emb()
-dats = lapply(syms, function(x) {
-  ans = simba_barcode_data(symbol = x, origad = pp,
+ans = simba_barcode_data(symbols = syms, origad = pp,
     clabel="celltype", simbaref=sref, cembpath = cp,
     gembpath = gp)
-  ans$gene = x
-  ans
-  })
-alld = do.call(rbind, dats)
 library(ggplot2)
-ggplot(alld, aes(x=rank, xend=rank, y=0, yend=score, colour=attr)) +
-  geom_segment() + facet_wrap(~gene, ncol=2) + 
+ggplot(ans, aes(x=rank, xend=rank, y=0, yend=score, colour=attr)) +
+  geom_segment() + facet_wrap(~symbol, ncol=2) + 
     theme(strip.text=element_text(size=24), 
       legend.text=element_text(size=24), 
-      axis.text=element_text(size=24))
+      axis.text=element_text(size=24)) +
+guides(colour = guide_legend(override.aes = list(linetype=1, lwd=2)))
 ```
 
 # Conclusions

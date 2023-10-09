@@ -21,8 +21,9 @@ compare_entities = function( simbaref, refemb, queryemb,
       T = temperature)
 }
 
-#' 'barcode' data for figure 2d
-#' @param symbol character(1) gene symbol for barcode visualization
+
+#' 'barcode' data for figure 2d of original simba paper
+#' @param symbols character() vector of gene symbols for barcode visualization
 #' @param origad AnnData reference to original RNA-seq data
 #' @param clabel character(1) column name for entity type in origad
 #' @param simbaref instance of python module for simba
@@ -33,13 +34,14 @@ compare_entities = function( simbaref, refemb, queryemb,
 #' @examples
 #' sref = simba_ref()
 #' p3k = sref$read_h5ad(get_10x3kpbmc_path(overwrite=TRUE))
-#' myd = simba_barcode_data( symbol = "MS4A1",
+#' myd = simba_barcode_data( symbols = c("MS4A1", "CST3", "NKG7"),
 #'    origad = p3k, clabel = "celltype",
 #'    simbaref = sref, cembpath = get_3k_cell_emb(),
 #'    gembpath = get_3k_gene_emb() )
-#' head(myd)
+#' head(myd,3)
+#' table(myd$symbol)
 #' @export
-simba_barcode_data = function(symbol, origad, clabel, simbaref,
+simba_barcode_data = function(symbols, origad, clabel, simbaref,
    cembpath, gembpath, layer="softmax") {
    cemb = simbaref$read_h5ad( cembpath )
    gemb = simbaref$read_h5ad( gembpath )
@@ -47,12 +49,20 @@ simba_barcode_data = function(symbol, origad, clabel, simbaref,
    names(cemb$obs) = clabel
    cmp <- simbaref$tl$compare_entities(cemb, gemb )
    scos = cmp$layers[layer]
-   ind = which(rownames(cmp$var)==symbol)
-   if (length(ind)==0) stop(sprintf("%s not present in compare_entities $var result",
-               symbol))
-   oog = order(scos[,ind], decreasing=TRUE)
-   data.frame(rank=seq_len(nrow(scos)), score=sort(scos[,ind], decreasing=TRUE),
-      attr=cmp$obs[[clabel]][oog])
-   #plot(sort(sm[,456]), pch=19, col=factor(cmp$obs$celltype[oog]))
+   nsym = length(symbols)
+   dfl = vector("list", nsym)
+   for (i in seq_len(nsym)) {
+     ind = which(rownames(cmp$var)==symbols[i])
+     if (length(ind)==0) {
+          message(sprintf("%s not present in compare_entities $var result",
+               symbols[i]))
+          next
+          }
+     oog = order(scos[,ind], decreasing=TRUE)
+     dfl[[i]] = data.frame(rank=seq_len(nrow(scos)), score=sort(scos[,ind], decreasing=TRUE),
+          attr=cmp$obs[[clabel]][oog], symbol=symbols[i])
+     }
+     do.call(rbind, dfl)
 }
+
 
