@@ -171,14 +171,13 @@ To see how this works in a vignette, we'll drill
 down on a small portion of the projection.
 
 To help with annotation, we define a new function
-that adds a persistent label.
+that adds persistent labels for gene symbols.
 ```{r drill, message=FALSE}
 library(plotly)
-addg = function (p=., sym = "NKG7", dat) 
-{
-    ro = dplyr::filter(dat, fullanno == sym)
-    plotly::add_text(p, x = ro$x, y = ro$y, text = sym, 
-        textfont=list(size=15, color="black"))
+addg =  function (p=., sym = "NKG7", dat) {
+    ro = dplyr::filter(dat, fullanno %in% sym)
+    plotly::add_text(p, x = ~x, y = ~y, text = ~fullanno, 
+        textfont=list(size=15, color="black"), data=ro)
 }
 ```
 
@@ -189,12 +188,8 @@ annotations of gene positions in the combined embedding.
 ndf = kkdf |> dplyr::filter(x > -6.2, x < -3, y > 4.5)
 p <- plot_ly(ndf, x=~x, y=~y, color=~ent,
    mode="markers", text=~fullanno, type="scatter") %>% 
-     addg(dat=ndf) %>% 
-     addg(sym="IL7R", dat=ndf) %>%
-     addg(sym="CD8B", dat=ndf) %>%
-     addg(sym="CD8A", dat=ndf) %>%
-     addg(sym="BCL2", dat=ndf) %>%
-     addg(sym="LDLRAP1", dat=ndf)
+     addg(sym= c("IL7R", "CD8A", "CD8B", "BCL2", 
+        "TOB1", "LDLRAP1"), dat=ndf) 
 p
 ```
 
