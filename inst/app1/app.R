@@ -10,6 +10,7 @@ ui = fluidPage(
   sidebarPanel(
    helpText("SIMBA single cell analysis"),
    fileInput("h5ad", "h5ad upload"),
+   uiOutput("varbox"),
    textOutput("stuff"),
    uiOutput("preproc"),
    uiOutput("step2"),
@@ -42,6 +43,10 @@ server = function(input, output, session) {
    shiny::validate(need(!is.null(input$h5ad), "waiting for h5ad file selection"))
    shiny::validate(need(suffix(input$h5ad)=="h5ad", "file suffix must be 'h5ad'"))
    bb = get_input()
+   output$varbox = renderUI({
+     checkboxGroupInput("obsvar", "cell vbls", 
+        choices=names(bb$obs), selected=names(bb$obs)[1])
+     })
    output$preproc = renderUI({
     actionButton("dopreproc", "Basic preprocessing")
     })
